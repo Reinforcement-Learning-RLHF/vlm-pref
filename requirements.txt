@@ -1,0 +1,17 @@
+google-genai
+dotenv
+torch
+torchvision
+git+https://github.com/huggingface/transformers.git
+datasets
+huggingface-hub
+hf_transfer
+jinja2
+empy
+accelerate
+safetensors
+sentencepiece
+pillow
+bitsandbytes
+av
+torchcodec

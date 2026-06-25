@@ -1,0 +1,15 @@
+{
+  "rollout_id": "good_clean_slow",
+  "task_name": "pour",
+  "task_goal": "Pour the contents of the cup into the target container.",
+  "video_filename": "good_clean_slow_agentview.mp4",
+  "video_path": "data/rollouts/good_clean_slow/good_clean_slow_agentview.mp4",
+  "simulator": "custom",
+  "success_label": true,
+  "timestamp": "2026-03-26T00:00:00Z",
+  "additional_notes": "Smooth, controlled pour at a good angle. Steady and successful.",
+  "total_reward": 454.9701,
+  "steps_recorded": 600,
+  "tilt_deg": 110,
+  "noise": 0.0
+}

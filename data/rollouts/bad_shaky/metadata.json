@@ -1,0 +1,15 @@
+{
+  "rollout_id": "bad_shaky",
+  "task_name": "pour",
+  "task_goal": "Pour the contents of the cup into the target container.",
+  "video_filename": "bad_shaky_agentview.mp4",
+  "video_path": "data/rollouts/bad_shaky/bad_shaky_agentview.mp4",
+  "simulator": "custom",
+  "success_label": false,
+  "timestamp": "2026-03-26T00:00:00Z",
+  "additional_notes": "Unstable, shaky trajectory throughout \u2014 poor motor control.",
+  "total_reward": 7.5726,
+  "steps_recorded": 600,
+  "tilt_deg": 105,
+  "noise": 0.18
+}

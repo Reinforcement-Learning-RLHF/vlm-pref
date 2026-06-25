@@ -1,0 +1,15 @@
+{
+  "rollout_id": "bad_overshoot_tilt",
+  "task_name": "pour",
+  "task_goal": "Pour the contents of the cup into the target container.",
+  "video_filename": "bad_overshoot_tilt_agentview.mp4",
+  "video_path": "data/rollouts/bad_overshoot_tilt/bad_overshoot_tilt_agentview.mp4",
+  "simulator": "custom",
+  "success_label": false,
+  "timestamp": "2026-03-26T00:00:00Z",
+  "additional_notes": "Over-tilted \u2014 would dump everything and spill.",
+  "total_reward": 12.826,
+  "steps_recorded": 600,
+  "tilt_deg": 175,
+  "noise": 0.02
+}

@@ -1,2 +1,16 @@
 traj_A,traj_B,label
-mock_lift_002,mock_pour_001,0.0
+bad_incomplete_tilt,bad_overshoot_tilt,0.5
+bad_incomplete_tilt,bad_shaky,0.5
+bad_incomplete_tilt,bad_too_fast,0.5
+bad_incomplete_tilt,good_clean_medium,0.0
+bad_incomplete_tilt,good_clean_slow,0.0
+bad_overshoot_tilt,bad_shaky,0.5
+bad_overshoot_tilt,bad_too_fast,0.5
+bad_overshoot_tilt,good_clean_medium,0.0
+bad_overshoot_tilt,good_clean_slow,0.0
+bad_shaky,bad_too_fast,0.5
+bad_shaky,good_clean_medium,0.0
+bad_shaky,good_clean_slow,0.0
+bad_too_fast,good_clean_medium,0.0
+bad_too_fast,good_clean_slow,0.0
+good_clean_medium,good_clean_slow,0.5

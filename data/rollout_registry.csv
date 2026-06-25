@@ -1,3 +1,7 @@
 rollout_id,task_name,task_goal,video_filename,video_path,simulator,success_label,timestamp,additional_notes
-mock_lift_002,lift,Lift the block.,rollout_wristview.mp4,data/rollouts/mock_lift_002/rollout_wristview.mp4,isaac,false,2026-05-30T15:00:00Z,
-mock_pour_001,pour,Pour contents.,rollout_agentview.mp4,data/rollouts/mock_pour_001/rollout_agentview.mp4,robosuite,true,2026-05-30T14:00:00Z,Perfect pour
+bad_incomplete_tilt,pour,Pour the contents of the cup into the target container.,bad_incomplete_tilt_agentview.mp4,data/rollouts/bad_incomplete_tilt/bad_incomplete_tilt_agentview.mp4,custom,false,2026-03-26T00:00:00Z,Insufficient tilt — would barely pour anything out.
+bad_overshoot_tilt,pour,Pour the contents of the cup into the target container.,bad_overshoot_tilt_agentview.mp4,data/rollouts/bad_overshoot_tilt/bad_overshoot_tilt_agentview.mp4,custom,false,2026-03-26T00:00:00Z,Over-tilted — would dump everything and spill.
+bad_shaky,pour,Pour the contents of the cup into the target container.,bad_shaky_agentview.mp4,data/rollouts/bad_shaky/bad_shaky_agentview.mp4,custom,false,2026-03-26T00:00:00Z,"Unstable, shaky trajectory throughout — poor motor control."
+bad_too_fast,pour,Pour the contents of the cup into the target container.,bad_too_fast_agentview.mp4,data/rollouts/bad_too_fast/bad_too_fast_agentview.mp4,custom,false,2026-03-26T00:00:00Z,"Rushed motion — too fast, loss of control at tilt."
+good_clean_medium,pour,Pour the contents of the cup into the target container.,good_clean_medium_agentview.mp4,data/rollouts/good_clean_medium/good_clean_medium_agentview.mp4,custom,true,2026-03-26T00:00:00Z,Controlled pour at medium speed. Reaches good tilt angle and completes task.
+good_clean_slow,pour,Pour the contents of the cup into the target container.,good_clean_slow_agentview.mp4,data/rollouts/good_clean_slow/good_clean_slow_agentview.mp4,custom,true,2026-03-26T00:00:00Z,"Smooth, controlled pour at a good angle. Steady and successful."

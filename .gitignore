@@ -1,2 +1,36 @@
+# Secrets
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+robenv/
+env/
+
+# Large data files — use external storage (e.g. HuggingFace Hub, S3)
+*.mp4
+*.hdf5
+*.h5
+*.avi
+*.mov
+
+# Script outputs
+keyframes/
 demos/
+models/
+
+# Claude Code project settings (local only)
+.claude/
+
+# Generated plots (commit results_table.csv but not figures)
+results/figures/*
+!results/figures/.gitkeep

@@ -1,1 +1,1 @@
-traj_A,traj_B,label
+traj_A,traj_B,label,evaluator_type,timestamp,model_version,prompt_version

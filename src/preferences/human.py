@@ -10,7 +10,10 @@ import csv
 import random
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+
+FIELDNAMES = ["traj_A", "traj_B", "label", "evaluator_type", "timestamp", "model_version", "prompt_version"]
 
 
 def _open_video(path: str) -> None:
@@ -97,7 +100,7 @@ def generate_human_pairs(
     write_header = not output_csv.exists() or output_csv.stat().st_size == 0
 
     with open(output_csv, "a", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["traj_A", "traj_B", "label"])
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         if write_header:
             writer.writeheader()
 
@@ -110,6 +113,10 @@ def generate_human_pairs(
                     "traj_A": a["rollout_id"],
                     "traj_B": b["rollout_id"],
                     "label": result,
+                    "evaluator_type": "human",
+                    "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "model_version": "human",
+                    "prompt_version": "n/a",
                 })
                 count += 1
 

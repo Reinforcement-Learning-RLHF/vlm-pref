@@ -8,6 +8,7 @@ Importable interface:
 
 import csv
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from google import genai
@@ -16,6 +17,9 @@ from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts"
+
+FIELDNAMES = ["traj_A", "traj_B", "label", "evaluator_type", "timestamp", "model_version", "prompt_version"]
+PROMPT_VERSION = "gemini_pref_v1"
 
 
 class PreferenceLabel(BaseModel):
@@ -152,17 +156,36 @@ def generate_vlm_pairs(
 
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     with open(output_csv, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["traj_A", "traj_B", "label"])
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         writer.writeheader()
 
+        session_start = time.time()
+
         for i, (a, b) in enumerate(pairs):
-            print(f"Labeling pair {i + 1}/{len(pairs)}: {a['rollout_id']} vs {b['rollout_id']}")
+            started_at = datetime.now().strftime("%H:%M:%S")
+            print(f"Labeling pair {i + 1}/{len(pairs)}: {a['rollout_id']} vs {b['rollout_id']}  [started {started_at}]")
+            pair_start = time.time()
+
             result = label_pair(a["video_path"], b["video_path"], api_key, model, prompt=prompt)
+            labeled_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            pair_elapsed = time.time() - pair_start
+            total_elapsed = time.time() - session_start
+            print(f"  Pair done in {pair_elapsed:.1f}s  |  total elapsed {total_elapsed:.1f}s")
+
             writer.writerow({
                 "traj_A": a["rollout_id"],
                 "traj_B": b["rollout_id"],
                 "label": result["score"],
+                "evaluator_type": "vlm_gemini",
+                "timestamp": labeled_at,
+                "model_version": model,
+                "prompt_version": PROMPT_VERSION,
             })
 
+    total_secs = time.time() - session_start
+    total_mins, secs = divmod(int(total_secs), 60)
+    avg = total_secs / len(pairs) if pairs else 0
+    print(f"\nFinished {len(pairs)} pairs in {total_mins}m {secs:02d}s  |  avg {avg:.1f}s per pair")
     print(f"Wrote {len(pairs)} labeled pairs to {output_csv}")
     return len(pairs)

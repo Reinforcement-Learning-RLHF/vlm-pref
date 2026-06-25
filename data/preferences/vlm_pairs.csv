@@ -1,5 +1,1 @@
-traj_A,traj_B,label
-good_clean_medium,bad_incomplete_tilt,0.75
-good_clean_medium,bad_overshoot_tilt,1.0
-good_clean_medium,bad_shaky,0.25
-good_clean_medium,bad_too_fast,1.0
+traj_A,traj_B,label,evaluator_type,timestamp,model_version,prompt_version

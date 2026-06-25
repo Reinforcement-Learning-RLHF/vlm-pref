@@ -12,8 +12,11 @@ Label rules (applied in priority order):
 """
 
 import csv
+from datetime import datetime, timezone
 from itertools import combinations
 from pathlib import Path
+
+FIELDNAMES = ["traj_A", "traj_B", "label", "evaluator_type", "timestamp", "model_version", "prompt_version"]
 
 
 def _score_rollout(row: dict) -> tuple:
@@ -60,7 +63,7 @@ def generate_scripted_pairs(
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     count = 0
     with open(output_csv, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["traj_A", "traj_B", "label"])
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         writer.writeheader()
 
         for a, b in pairs:
@@ -78,6 +81,10 @@ def generate_scripted_pairs(
                 "traj_A": a["rollout_id"],
                 "traj_B": b["rollout_id"],
                 "label": label,
+                "evaluator_type": "scripted",
+                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "model_version": "rules_v1",
+                "prompt_version": "n/a",
             })
             count += 1
 

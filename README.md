@@ -1,6 +1,6 @@
 # Preference Feedback for Robot Manipulation
 
-Compare three sources of preference feedback — scripted rules, human labels, and VLM scoring — to train and evaluate reward models for robot pick-and-place tasks on a real SO-101 arm.
+Compare three sources of preference feedback (scripted rules, human labels, VLM scoring) to train and evaluate reward models for robot pick-and-place tasks on a real SO-101 arm.
 
 ## Team Split
 
@@ -45,37 +45,37 @@ cp .env.example .env
 
 ## Running the Pipeline
 
-**Step 1 — Build the rollout registry** (re-run after every new episode batch):
+**Step 1: Build the rollout registry** (re-run after every new episode batch):
 
 ```bash
 python scripts/build_registry.py
 ```
 
-**Step 2 — Generate preference pairs** (run one or all three):
+**Step 2: Generate preference pairs** (run one or all three):
 
 ```bash
-# Scripted — instant, no API or GPU needed
+# Scripted: instant, no API or GPU needed
 python scripts/gen_scripted_pairs.py
 
-# Human — interactive terminal session (opens videos on request)
+# Human: interactive terminal session (opens videos on request)
 python scripts/gen_human_pairs.py --sample-size 50
 
-# VLM — Gemini (recommended, requires GOOGLE_API_KEY in .env)
+# VLM: Gemini (recommended, requires GOOGLE_API_KEY in .env)
 python scripts/gen_vlm_pairs.py
 
-# VLM — local HuggingFace model (backup, requires GPU, no API cost)
+# VLM: local HuggingFace model (backup, requires GPU, no API cost)
 python scripts/gen_vlm_pairs.py --backend hf --model Qwen/Qwen3-VL-2B-Instruct
 ```
 
 All scripts write to `data/preferences/` and accept `--help` for full options.
 
-**Step 3 — Train reward models** *(not yet implemented)*:
+**Step 3: Train reward models** *(not yet implemented)*:
 
 ```bash
 python src/reward_model/train.py --pairs data/preferences/scripted_pairs.csv
 ```
 
-**Step 4 — Compare results** *(not yet implemented)*:
+**Step 4: Compare results** *(not yet implemented)*:
 
 ```bash
 python src/reward_model/evaluate.py

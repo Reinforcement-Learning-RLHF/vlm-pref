@@ -16,7 +16,7 @@ venv/
 robenv/
 env/
 
-# Large data files — use external storage (e.g. HuggingFace Hub, S3)
+# Large data files (use external storage, e.g. HuggingFace Hub, S3)
 *.mp4
 *.hdf5
 *.h5

@@ -100,7 +100,7 @@ def _parse_winner(raw_output: str) -> float:
     elif "video 2" in lower and "video 1" not in lower:
         return 0.0
     elif "video 1" in lower and "video 2" in lower:
-        # Both mentioned — look for explicit winner signal
+        # Both mentioned; look for explicit winner signal
         idx1 = lower.index("video 1")
         idx2 = lower.index("video 2")
         return 1.0 if idx1 < idx2 else 0.0

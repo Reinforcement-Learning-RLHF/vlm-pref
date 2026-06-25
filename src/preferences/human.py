@@ -32,10 +32,10 @@ def label_pair(video_path_1: str, video_path_2: str) -> float | None:
     Show two video paths, optionally open them, prompt for a preference.
 
     Returns:
-        1.0   — Video A is better
-        0.0   — Video B is better
-        0.5   — Tie
-        None  — Skipped (not written to CSV)
+        1.0   - Video A is better
+        0.0   - Video B is better
+        0.5   - Tie
+        None  - Skipped (not written to CSV)
     """
     print(f"\n  Video A: {video_path_1}")
     print(f"  Video B: {video_path_2}")

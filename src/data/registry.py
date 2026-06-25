@@ -45,7 +45,7 @@ def load_metadata(rollout_dir: Path) -> dict | None:
         with metadata_path.open() as f:
             data = json.load(f)
     except json.JSONDecodeError as e:
-        print(f"  [skip] {rollout_dir.name}: invalid JSON — {e}")
+        print(f"  [skip] {rollout_dir.name}: invalid JSON - {e}")
         return None
 
     missing = REQUIRED_FIELDS - data.keys()

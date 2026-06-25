@@ -58,7 +58,7 @@ Each rollout folder must contain a `metadata.json` file with the following field
 - If a rollout has multiple camera views (e.g. `agentview` and `wristview`), create one subfolder per view, each with its own `metadata.json` and video file.
 - The `video_path` field should use forward slashes and be relative to the project root.
 - `success_label` must be a JSON boolean (`true` / `false`), not a string.
-- If a field is not applicable, omit it rather than using `null` — the registry script treats missing optional fields as empty strings.
+- If a field is not applicable, omit it rather than using `null`; the registry script treats missing optional fields as empty strings.
 
 ---
 

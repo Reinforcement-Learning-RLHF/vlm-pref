@@ -37,9 +37,9 @@ def generate_scripted_pairs(
     Generate pairwise preference labels from rollout metadata fields.
 
     All (A, B) combinations are considered. Label:
-        1.0  — A is strictly better than B
-        0.0  — B is strictly better than A
-        0.5  — equal on all available metrics
+        1.0  - A is strictly better than B
+        0.0  - B is strictly better than A
+        0.5  - equal on all available metrics
 
     Returns number of pairs written.
     """

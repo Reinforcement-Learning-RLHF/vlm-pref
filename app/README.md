@@ -2,7 +2,7 @@
 
 Owner: John
 
-## What goes here
+## What's here
 
 A Streamlit app for collecting human preference labels by watching two robot videos and picking the better one. Replaces the terminal-based `scripts/gen_human_pairs.py` with a proper video UI.
 
@@ -23,7 +23,7 @@ streamlit run app/main.py
 
 ## Key files to read first
 
-- `src/preferences/human.py` -- labeling logic already implemented (terminal version); adapt for Streamlit
+- `src/preferences/human.py` -- human labeling logic implemented (terminal version); adapt for Streamlit
 - `data/rollout_registry.csv` -- list of episodes with video paths and success labels
 - `data/preferences/human_pairs.csv` -- output file; append (traj_A, traj_B, label) rows here
 

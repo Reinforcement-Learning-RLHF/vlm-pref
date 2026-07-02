@@ -311,18 +311,36 @@ def tab_live(registry: pd.DataFrame, api_key: str, model: str) -> None:
     st.divider()
 
     if not api_key:
-        st.warning("Add your GOOGLE_API_KEY in the sidebar to enable scoring.")
+        st.warning("Go to **Settings** to add your Gemini API key before scoring.")
 
     if st.button("Run Gemini", type="primary", use_container_width=True, disabled=not api_key):
         row_a = registry[registry["rollout_id"] == rollout_a].iloc[0]
         row_b = registry[registry["rollout_id"] == rollout_b].iloc[0]
-        path_a = ROOT / row_a["video_path"]
-        path_b = ROOT / row_b["video_path"]
 
-        for lbl, path in [("A", path_a), ("B", path_b)]:
-            if not path.exists():
-                st.error(f"Video for Rollout {lbl} not found locally: `{path}`\nRun the video upload script first.")
-                return
+        def _resolve_video(row, label: str) -> str | None:
+            """Return a local path to the video, downloading from HF if needed."""
+            local = ROOT / row["video_path"]
+            if local.exists():
+                return str(local)
+            url = row.get("video_url", "")
+            if url:
+                with st.spinner(f"Downloading Rollout {label} from HuggingFace..."):
+                    r = requests.get(url, timeout=120)
+                    r.raise_for_status()
+                    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+                        tmp.write(r.content)
+                        return tmp.name
+            return None
+
+        path_a = _resolve_video(row_a, "A")
+        path_b = _resolve_video(row_b, "B")
+
+        if not path_a:
+            st.error("Video for Rollout A not found locally and no video_url in registry. Run patch_registry_video_urls.py first.")
+            return
+        if not path_b:
+            st.error("Video for Rollout B not found locally and no video_url in registry. Run patch_registry_video_urls.py first.")
+            return
 
         from src.preferences.vlm_gemini import PROMPT_VERSION, label_pair
 
@@ -370,56 +388,24 @@ def tab_live(registry: pd.DataFrame, api_key: str, model: str) -> None:
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
-def render_sidebar() -> tuple[str, str]:
-    with st.sidebar:
-        sid = _sheets_id()
-        st.markdown("## Storage")
-        if sid:
-            st.success("Google Sheets", icon="📊")
-            st.caption("Labels save to cloud.")
-        else:
-            st.info("Local CSV", icon="💾")
-            st.caption("Configure Sheets in secrets.toml for cloud.")
-
-        st.divider()
-        st.markdown("## Gemini")
-        api_key = st.text_input(
-            "API Key",
-            value=os.getenv("GOOGLE_API_KEY", ""),
-            type="password",
-            placeholder="AIza...",
-            help="Loaded from .env automatically if present.",
-            label_visibility="collapsed",
-        )
-        if api_key:
-            st.success("API key set", icon="🔑")
-        else:
-            st.caption("Paste key or add to `.env`")
-
-        st.write("")
-        model = st.selectbox("Model", ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"], index=0)
-
-        st.divider()
-        st.caption("**Prompt version**")
-        try:
-            from src.preferences.vlm_gemini import PROMPT_VERSION
-            st.code(PROMPT_VERSION, language=None)
-        except Exception:
-            st.caption("n/a")
-
-    return api_key, model
+def render_sidebar() -> None:
+    pass
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
-    st.set_page_config(page_title="VLM Viewer", layout="wide", page_icon="🔍")
-    st.markdown(CSS, unsafe_allow_html=True)
+    render_sidebar()
 
-    api_key, model = render_sidebar()
+    # API key and model come from Settings page via session_state
+    api_key = st.session_state.get("gemini_api_key", "")
+    model = st.session_state.get("gemini_model", "gemini-2.5-flash")
 
     st.title("VLM Preference Viewer")
     st.caption("Explore stored Gemini labels or score a new pair live.")
+
+    if not api_key:
+        st.info("Go to **Settings** to add your Gemini API key before using the Live tab.", icon="⚙️")
 
     registry = load_registry()
     browse_tab, live_tab = st.tabs(["Browse Results", "Live Gemini"])
@@ -430,5 +416,4 @@ def main() -> None:
         tab_live(registry, api_key, model)
 
 
-if __name__ == "__main__":
-    main()
+main()

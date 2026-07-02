@@ -18,7 +18,10 @@ from pydantic import BaseModel, Field
 
 PROMPTS_DIR = Path(__file__).resolve().parents[2] / "prompts"
 
-FIELDNAMES = ["traj_A", "traj_B", "label", "evaluator_type", "timestamp", "model_version", "prompt_version"]
+FIELDNAMES = [
+    "traj_A", "traj_B", "label", "evaluator_type", "timestamp", "model_version", "prompt_version",
+    "score_ab", "score_ba_flipped", "comment_ab", "comment_ba", "consistent",
+]
 PROMPT_VERSION = "gemini_pref_v1"
 
 
@@ -89,25 +92,24 @@ def label_pair(
     score_ba_flipped = 1 - result_ba.score
     combined_score = (result_ab.score + score_ba_flipped) / 2
 
-    # Consistency check: both orderings should agree on the winner.
-    # score_ab > 0.5 means "video_path_1 wins" in the AB ordering.
-    # score_ba_flipped > 0.5 means "video_path_1 wins" in the BA ordering (after flipping).
-    ab_says_1_wins = result_ab.score > 0.5
-    ba_says_1_wins = score_ba_flipped > 0.5
-    consistent = (ab_says_1_wins == ba_says_1_wins) or (result_ab.score == 0.5 or score_ba_flipped == 0.5)
+    # Consistency check: both orderings must agree on the winner AND have similar confidence.
+    # A split like AB=0.40 / BA_flipped=0.00 is flagged inconsistent even though both are < 0.5,
+    # because the 0.40 spread means one ordering was uncertain while the other was decisive.
+    same_direction = (result_ab.score > 0.5) == (score_ba_flipped > 0.5)
+    close_scores = abs(result_ab.score - score_ba_flipped) <= 0.25
+    consistent = same_direction and close_scores
 
     print("\n--- label_pair scores ---")
     print(f"  AB ordering  (video_1 shown as Video 1): raw score = {result_ab.score}")
-    print(f"    -> {'video_1 wins' if ab_says_1_wins else 'video_2 wins' if result_ab.score < 0.5 else 'tie'}")
+    print(f"    -> {'video_1 wins' if result_ab.score > 0.5 else 'video_2 wins' if result_ab.score < 0.5 else 'tie'}")
     print(f"  BA ordering  (video_2 shown as Video 1): raw score = {result_ba.score}")
     print(f"  score_ba_flipped = 1 - {result_ba.score} = {score_ba_flipped}")
-    print(f"    -> {'video_1 wins' if ba_says_1_wins else 'video_2 wins' if score_ba_flipped < 0.5 else 'tie'}")
+    print(f"    -> {'video_1 wins' if score_ba_flipped > 0.5 else 'video_2 wins' if score_ba_flipped < 0.5 else 'tie'}")
     print(f"  combined = ({result_ab.score} + {score_ba_flipped}) / 2 = {combined_score}")
     if consistent:
         print(f"  [OK] Both orderings agree.")
     else:
-        print(f"  [WARN] Orderings are inconsistent — Gemini may have applied the score scale")
-        print(f"         backwards in one ordering. Check comments below to verify manually.")
+        print(f"  [WARN] Orderings inconsistent (spread={abs(result_ab.score - score_ba_flipped):.2f} > 0.25).")
     print(f"  comment_ab: {result_ab.comment}")
     print(f"  comment_ba: {result_ba.comment}")
     print("-------------------------\n")
@@ -181,6 +183,11 @@ def generate_vlm_pairs(
                 "timestamp": labeled_at,
                 "model_version": model,
                 "prompt_version": PROMPT_VERSION,
+                "score_ab": result["score_ab"],
+                "score_ba_flipped": result["score_ba_flipped"],
+                "comment_ab": result["comment_ab"],
+                "comment_ba": result["comment_ba"],
+                "consistent": result["consistent"],
             })
 
     total_secs = time.time() - session_start
